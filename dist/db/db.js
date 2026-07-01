@@ -1,6 +1,6 @@
 import process from 'node:process';
 import mongoose from 'mongoose';
-import { tableSchema, counterSchema } from './schema.js';
+import { tableSchema, userSchema, counterSchema } from './schema.js';
 export async function connectDB() {
     try {
         mongoose.connection.on('connecting', () => console.log('Connecting to MongoDB...'));
@@ -21,5 +21,6 @@ export async function connectDB() {
     }
 }
 export const table = mongoose.model('table0', tableSchema);
-export const counterTable = mongoose.model('counter0', counterSchema);
+export const user = mongoose.model('user0', userSchema);
+export const counter = mongoose.model('counter0', counterSchema);
 //# sourceMappingURL=db.js.map

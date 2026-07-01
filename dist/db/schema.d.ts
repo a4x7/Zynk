@@ -2,13 +2,10 @@ import { Schema } from 'mongoose';
 export interface tableType {
     _id: number;
     URL: string;
-    user: userType;
+    user: any;
 }
 export interface userType {
-    username: {
-        type: string;
-        unique: true;
-    };
+    username: string;
     email?: string;
     password: string;
 }
@@ -43,7 +40,7 @@ export declare const tableSchema: Schema<tableType, import("mongoose").Model<tab
     }, "id"> & {
         id: string;
     }>;
-    user?: import("mongoose").SchemaDefinitionProperty<userType, tableType, import("mongoose").Document<unknown, {}, tableType, {
+    user?: import("mongoose").SchemaDefinitionProperty<any, tableType, import("mongoose").Document<unknown, {}, tableType, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<tableType & Required<{
         _id: number;
@@ -62,10 +59,7 @@ export declare const userSchema: Schema<userType, import("mongoose").Model<userT
 }, "id"> & {
     id: string;
 }, {
-    username?: import("mongoose").SchemaDefinitionProperty<{
-        type: string;
-        unique: true;
-    }, userType, import("mongoose").Document<unknown, {}, userType, {
+    username?: import("mongoose").SchemaDefinitionProperty<string, userType, import("mongoose").Document<unknown, {}, userType, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<userType & {
         _id: import("mongoose").Types.ObjectId;

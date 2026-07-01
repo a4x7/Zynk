@@ -3,7 +3,7 @@ import { Schema } from 'mongoose';
 export interface tableType{
     _id: number,
     URL: string,
-    user: userType,
+    user: any,
 }
 
 export interface userType{

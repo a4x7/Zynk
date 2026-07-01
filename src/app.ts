@@ -8,7 +8,7 @@ import logger from './middlewares/logger.js';
 import cors from './middlewares/cors.js';
 import json from './middlewares/json.js';
 import urlencoded from './middlewares/urlencoded.js';
-import { connectDB, counterTable } from './db/db.js';
+import { connectDB, counter } from './db/db.js';
 import apiRouter  from './routes/api.js';
 import redirectRouter from './routes/redirect.js';
 
@@ -20,7 +20,6 @@ let PORT = parseInt(process.env.PORT || '8000');
 const app = express();
 
 app.use('/static', express.static('./public'));
-console.log(__dirname);
 
 app.use(logger);
 app.use(cors);
@@ -33,9 +32,9 @@ app.use('/', redirectRouter);
 app.listen(PORT, async () => {
     try{
         await connectDB();
-        const document = await counterTable.exists({id: 1});
+        const document = await counter.findOne({id: 1});
         if(!document)
-            await counterTable.create({id: 1});
+            await counter.create({id: 1});
     } catch(err){
         console.log(err);
         process.exit(1);

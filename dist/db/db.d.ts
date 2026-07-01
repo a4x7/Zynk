@@ -37,7 +37,7 @@ export declare const table: mongoose.Model<import("./schema.js").tableType, {}, 
     }, "id"> & {
         id: string;
     }>;
-    user?: mongoose.SchemaDefinitionProperty<import("./schema.js").userType, import("./schema.js").tableType, mongoose.Document<unknown, {}, import("./schema.js").tableType, {
+    user?: mongoose.SchemaDefinitionProperty<any, import("./schema.js").tableType, mongoose.Document<unknown, {}, import("./schema.js").tableType, {
         id: string;
     }, mongoose.DefaultSchemaOptions> & Omit<import("./schema.js").tableType & Required<{
         _id: number;
@@ -47,7 +47,54 @@ export declare const table: mongoose.Model<import("./schema.js").tableType, {}, 
         id: string;
     }>;
 }, import("./schema.js").tableType>, import("./schema.js").tableType>;
-export declare const counterTable: mongoose.Model<import("./schema.js").counterType, {}, {}, {}, mongoose.Document<unknown, {}, import("./schema.js").counterType, {}, mongoose.DefaultSchemaOptions> & import("./schema.js").counterType & {
+export declare const user: mongoose.Model<import("./schema.js").userType, {}, {}, {
+    id: string;
+}, mongoose.Document<unknown, {}, import("./schema.js").userType, {
+    id: string;
+}, mongoose.DefaultSchemaOptions> & Omit<import("./schema.js").userType & {
+    _id: mongoose.Types.ObjectId;
+} & {
+    __v: number;
+}, "id"> & {
+    id: string;
+}, mongoose.Schema<import("./schema.js").userType, mongoose.Model<import("./schema.js").userType, any, any, any, any, any, import("./schema.js").userType>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, import("./schema.js").userType, mongoose.Document<unknown, {}, import("./schema.js").userType, {
+    id: string;
+}, mongoose.DefaultSchemaOptions> & Omit<import("./schema.js").userType & {
+    _id: mongoose.Types.ObjectId;
+} & {
+    __v: number;
+}, "id"> & {
+    id: string;
+}, {
+    username?: mongoose.SchemaDefinitionProperty<string, import("./schema.js").userType, mongoose.Document<unknown, {}, import("./schema.js").userType, {
+        id: string;
+    }, mongoose.DefaultSchemaOptions> & Omit<import("./schema.js").userType & {
+        _id: mongoose.Types.ObjectId;
+    } & {
+        __v: number;
+    }, "id"> & {
+        id: string;
+    }>;
+    email?: mongoose.SchemaDefinitionProperty<string | undefined, import("./schema.js").userType, mongoose.Document<unknown, {}, import("./schema.js").userType, {
+        id: string;
+    }, mongoose.DefaultSchemaOptions> & Omit<import("./schema.js").userType & {
+        _id: mongoose.Types.ObjectId;
+    } & {
+        __v: number;
+    }, "id"> & {
+        id: string;
+    }>;
+    password?: mongoose.SchemaDefinitionProperty<string, import("./schema.js").userType, mongoose.Document<unknown, {}, import("./schema.js").userType, {
+        id: string;
+    }, mongoose.DefaultSchemaOptions> & Omit<import("./schema.js").userType & {
+        _id: mongoose.Types.ObjectId;
+    } & {
+        __v: number;
+    }, "id"> & {
+        id: string;
+    }>;
+}, import("./schema.js").userType>, import("./schema.js").userType>;
+export declare const counter: mongoose.Model<import("./schema.js").counterType, {}, {}, {}, mongoose.Document<unknown, {}, import("./schema.js").counterType, {}, mongoose.DefaultSchemaOptions> & import("./schema.js").counterType & {
     _id: mongoose.Types.ObjectId;
 } & {
     __v: number;

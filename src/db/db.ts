@@ -23,4 +23,4 @@ export async function connectDB(){
 
 export const table = mongoose.model('table0', tableSchema);
 export const user = mongoose.model('user0', userSchema);
-export const counterTable = mongoose.model('counter0', counterSchema);
+export const counter = mongoose.model('counter0', counterSchema);
