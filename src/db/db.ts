@@ -1,6 +1,8 @@
 import process from 'node:process';
+
 import mongoose from 'mongoose';
-import { tableSchema, userSchema, counterSchema } from './schema.js';
+
+import { tableSchema, userSchema } from './schema.js';
 
 export async function connectDB(){
     try {
@@ -9,6 +11,7 @@ export async function connectDB(){
         mongoose.connection.on('disconnected', () => console.log('Disconnected from the MongoDB'));
         mongoose.connection.on('disconnecting', () => console.log('Disconnecting from MongoDB...'));
         await mongoose.connect(process.env.MONGO_URI || '');
+        mongoose.connection.useDb('testDb');
         let handler = async () => {
             await mongoose.disconnect();
             process.exit(0);
@@ -18,9 +21,9 @@ export async function connectDB(){
         process.on('SIGTERM', handler);
     } catch(err) {
         console.log(err);   
+        process.exit(1);
     }
 }
 
 export const table = mongoose.model('table0', tableSchema);
 export const user = mongoose.model('user0', userSchema);
-export const counter = mongoose.model('counter0', counterSchema);

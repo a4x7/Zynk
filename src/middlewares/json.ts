@@ -1,5 +1,6 @@
-import type { Request, Response, NextFunction } from 'express';
 import type { Buffer } from 'node:buffer';
+
+import type { Request, Response, NextFunction } from 'express';
 
 function json(req: Request, res: Response, next: NextFunction) {
     const content_type = req.get('Content-Type');

@@ -1,8 +1,8 @@
-import { Router, type Request, type Response } from 'express';
-import jwt from 'jsonwebtoken';
 import Schema from 'mongoose';
+import jwt from 'jsonwebtoken';
+import { Router, type Request, type Response } from 'express';
 
-import { table, counter, user } from '../db/db.js';
+import { table, user } from '../db/db.js';
 import type { tableType } from '../db/schema.js';
 import type { payloadType } from './authentication.js';
 
@@ -10,7 +10,7 @@ const apiRouter = Router();
 
 const apiGet = async (req: Request, res: Response) => {
     try{
-        const { token }: { token: string } = req.body || {};
+        const token: string = req.cookies.authtoken;
         if(!token)
             return res.status(400).send({success: false, received: req.body, response: 'No token found'});
         const payload = verifyToken(token) as payloadType;
@@ -25,15 +25,15 @@ const apiGet = async (req: Request, res: Response) => {
 const apiPost =  async (req: Request, res: Response) => {
     if(!req.body)
         return res.status(200).send({success: false, received: req.body, response: 'Empty body'});
-    const { URL, token }: { URL: string, token: string } = req.body;
+    const URL: string = req.body.URL;
+    const token: string = req.cookies.authtoken;
     while(true){
         try {
             const payload = verifyToken(token) as payloadType;
-            const ctr = await counter.findOne({id: 1});
             const usr = await user.findOne({username: payload.username});
-            if(!ctr)
-                throw 'Counter not found';
-            const _id = Math.round(Date.now()/1000 + Math.random()*100000 + ctr.count + URL.length);
+            if(!usr)
+                throw 'User not found';
+            const _id = Math.round(Date.now()/1000 + Math.random()*100000 + URL.length);
             const output = encoder(_id);
             const doc: tableType = {
                 _id: _id,
@@ -41,8 +41,6 @@ const apiPost =  async (req: Request, res: Response) => {
                 user: usr!._id as Schema.Types.ObjectId,
             }
             await table.create(doc);
-            ctr.$inc('count', 1); 
-            await ctr.save();
             return res.status(201).send({success: true, received: req.body, response: output});
         } catch(err: any) {
             if(err?.code === 11000)
@@ -69,7 +67,7 @@ function encoder(id: number){
     return encodedStr;
 }
 
-function verifyToken(token: string){
+export function verifyToken(token: string){
     try{
         return jwt.verify(token, process.env.JWT_KEY || 'wdin4w2#i%paso%aq0)(!oaimoa0i-qdmmvaapk[moncoan13091jm1iqj0358');
     } catch(err){

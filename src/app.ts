@@ -1,16 +1,19 @@
-import process from 'node:process';
 import path from 'node:path';
 import url from 'node:url';
 
 import express from 'express';
+import cookeParser from 'cookie-parser';
 
 import logger from './middlewares/logger.js';
 import cors from './middlewares/cors.js';
 import json from './middlewares/json.js';
 import urlencoded from './middlewares/urlencoded.js';
-import { connectDB, counter } from './db/db.js';
+import ratelimiter from './middlewares/ratelimiter.js';
+import { connectDB } from './db/db.js';
 import apiRouter  from './routes/api.js';
 import redirectRouter from './routes/redirect.js';
+import authenticationRouter from './routes/authentication.js';
+import cookieParser from 'cookie-parser';
 
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,25 +23,19 @@ let PORT = parseInt(process.env.PORT || '8000');
 const app = express();
 
 app.use('/static', express.static('./public'));
+app.use(cookieParser());
 
 app.use(logger);
 app.use(cors);
 app.use(json);
 app.use(urlencoded);
+app.use(ratelimiter);
 
 app.use('/', apiRouter);
 app.use('/', redirectRouter);
+app.use('/', authenticationRouter);
 
 app.listen(PORT, async () => {
-    try{
-        await connectDB();
-        const document = await counter.findOne({id: 1});
-        if(!document)
-            await counter.create({id: 1});
-    } catch(err){
-        console.log(err);
-        process.exit(1);
-    }
+    await connectDB();
     console.log(`Listening on port ${PORT}...`);
 });
-//fRWEW1

@@ -1,6 +1,7 @@
-import qs from 'querystring';
-import type { Request, Response, NextFunction } from 'express';
+import qs from 'node:querystring';
 import type { Buffer } from 'node:buffer';
+
+import type { Request, Response, NextFunction } from 'express';
 
 function urlencoded(req: Request, res: Response, next: NextFunction) {
     const content_type = req.get('Content-Type');
