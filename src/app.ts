@@ -2,7 +2,7 @@ import path from 'node:path';
 import url from 'node:url';
 
 import express from 'express';
-import cookeParser from 'cookie-parser';
+import cookieParser from 'cookie-parser';
 
 import logger from './middlewares/logger.js';
 import cors from './middlewares/cors.js';
@@ -13,7 +13,7 @@ import { connectDB } from './db/db.js';
 import apiRouter  from './routes/api.js';
 import redirectRouter from './routes/redirect.js';
 import authenticationRouter from './routes/authentication.js';
-import cookieParser from 'cookie-parser';
+import errorHandler from './middlewares/errorHandler.js';
 
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -34,6 +34,8 @@ app.use(ratelimiter);
 app.use('/', apiRouter);
 app.use('/', redirectRouter);
 app.use('/', authenticationRouter);
+
+app.use(errorHandler);
 
 app.listen(PORT, async () => {
     await connectDB();

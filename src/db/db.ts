@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 
 import { tableSchema, userSchema } from './schema.js';
 
-export async function connectDB(){
+async function connectDB() {
     try {
         mongoose.connection.on('connecting', () => console.log('Connecting to MongoDB...'));
         mongoose.connection.on('connected', () => console.log('Connected to MongoDB'));
@@ -25,5 +25,7 @@ export async function connectDB(){
     }
 }
 
-export const table = mongoose.model('table0', tableSchema);
-export const user = mongoose.model('user0', userSchema);
+const table = mongoose.model('table0', tableSchema);
+const user = mongoose.model('user0', userSchema);
+
+export { connectDB, table, user };

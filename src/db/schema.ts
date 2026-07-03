@@ -1,18 +1,18 @@
 import { Schema } from 'mongoose';
 
-export interface tableType{
+interface tableType {
     _id: number,
     URL: string,
     user: any,
 }
 
-export interface userType{
+interface userType {
     username: string,
     email?: string,
     password: string,
 }
 
-export const tableSchema = new Schema<tableType>({
+const tableSchema = new Schema<tableType>({
     _id: Number,
     URL: {
         type: String,
@@ -26,7 +26,7 @@ export const tableSchema = new Schema<tableType>({
 tableSchema.index({ createdAt: 1 }, { expireAfterSeconds: 300 });
 tableSchema.index({ URL: 1, user: 1}, { unique: true });
 
-export const userSchema = new Schema<userType>({
+const userSchema = new Schema<userType>({
     username: {
         type: String,
         required: true,
@@ -38,3 +38,6 @@ export const userSchema = new Schema<userType>({
         required: true,
     },
 });
+
+export type { tableType, userType };
+export { tableSchema, userSchema };

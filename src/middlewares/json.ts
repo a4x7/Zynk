@@ -2,7 +2,7 @@ import type { Buffer } from 'node:buffer';
 
 import type { Request, Response, NextFunction } from 'express';
 
-function json(req: Request, res: Response, next: NextFunction) {
+function json(req: Request, _: Response, next: NextFunction): void {
     const content_type = req.get('Content-Type');
     const hasBody = parseInt(req.get('Content-Length')!) > 0;
     if(!hasBody || content_type !== 'application/json')
@@ -17,7 +17,7 @@ function json(req: Request, res: Response, next: NextFunction) {
                 req.body = JSON.parse(body);
             next();
         } catch(err) {
-            return res.status(400).send('Invalid JSON structure');
+            next(new Error('Invalid JSON Structure'));
         }
     });
 }
