@@ -61,4 +61,17 @@ const apiPost =  asyncWrapper(async (req: Request, res: Response): Promise<void>
     apiResponse(req, res, 201, output);
 });
 
-export { apiGet, apiPost };
+const apiDelete = asyncWrapper(async (req: Request, res: Response): Promise<void> => {
+    if(!req.body)
+        throw new Error('Empty body');
+    const URL: string = req.body.URL;
+    const token: string = req.cookies.authtoken;
+    const payload = verifyToken(token) as payloadType;
+    const usr = await user.findOne({username: payload.username}).lean();
+    if(!usr)
+        throw new Error('User not found');
+    const doc = await table.deleteOne({user: usr._id, URL});
+    apiResponse(req, res, 200, doc);
+});
+
+export { apiGet, apiPost, apiDelete };
