@@ -1,0 +1,105 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-size: 16px;
+    background-color: var(--bg-color);
+    color: var(--fg-color);
+    font-family: monospace;
+}
+header, main, footer {
+    margin-bottom: 1rem;
+}
+a {
+    color: var(--fg-color);
+    text-decoration-line: none;
+    cursor: pointer;
+}
+a:hover{
+    text-decoration-line: underline;
+}
+
+#navbar {
+    display: flex;
+    padding: 0 1rem 0 1rem;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #16db65;
+    height: 4rem;
+    font-size: 1rem;
+}
+#navbar * {
+    border-radius: 5px;
+    min-width: 6rem;
+    min-height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #020202;
+    text-decoration-color: #020202;
+}
+#navbar a:hover{
+    color: #16db65;
+    background-color: var(--bg-color);
+    text-decoration-line: none;
+}
+#navbar #nav-heading:hover {
+    background-color: unset;
+    color: var(--fg-color);
+    text-decoration-line: underline;
+}
+
+#heading {
+    display: flex;
+    justify-content: space-around;
+    font-size: 3rem;
+    margin-bottom: 2rem;
+}
+#heading-name{
+    border: 1px solid var(--fg-color);
+    box-shadow: 0 0 2px var(--fg-color);
+    border-radius: 5px;
+    padding: 0 0.5rem 0 0.5rem;
+}
+#heading-theme{
+    min-width: 1.3em;
+    height: 1.3em;
+    border-radius: 5px;
+    background-color: var(--bg-color);
+    color: var(--fg-color);
+    font-size: 3rem;
+    border: none;
+    cursor: pointer;
+}
+#heading-theme:hover{
+    background-color: var(--fg-color);
+    color: var(--bg-color);
+}
+
+table,th,td{
+    border: 1px solid var(--fg-color);
+    min-width: 2rem;
+    min-height: 2rem;
+}
+table {
+    background-color: var(--fg-color);
+}
+th,td {
+    background-color: var(--bg-color);
+    padding: 0.5rem;
+}
+
+@media(prefers-color-scheme: dark){
+    :root{
+        --bg-color: #020202;
+        --fg-color: #e8eaed;
+    }
+}
+
+@media(prefers-color-scheme: light){
+    :root{
+        --bg-color: #e8eaed;
+        --fg-color: #020202;
+    }
+}

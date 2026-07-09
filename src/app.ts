@@ -9,7 +9,7 @@ import cors from './middlewares/cors.js';
 import json from './middlewares/json.js';
 import urlencoded from './middlewares/urlencoded.js';
 import ratelimiter from './middlewares/ratelimiter.js';
-import { connectDB } from './db/db.js';
+import connectDB from './db/db.js';
 import apiRouter  from './routes/api.js';
 import redirectRouter from './routes/redirect.js';
 import authenticationRouter from './routes/authentication.js';
@@ -37,7 +37,8 @@ app.use('/', authenticationRouter);
 
 app.use(errorHandler);
 
-app.listen(PORT, async () => {
-    await connectDB();
-    console.log(`Listening on port ${PORT}...`);
+connectDB().then(() => {
+    app.listen(PORT, () => {
+        console.log(`Listening on port ${PORT}...`);
+    });
 });

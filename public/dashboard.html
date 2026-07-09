@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
     <link rel="stylesheet" href="/static/css/index.css">
+    <title>Dashboard</title>
 </head>
 <body>
     <header>
@@ -20,13 +20,14 @@
     </header>
 
     <main>
-        <form id="loginForm" onsubmit="login(event)">
-            <label for="usrname">Username:</label>
-            <input type="text" id="usrname" name="username"><br>
-            <label for="pass">Password:</label>
-            <input type="text" id="pass" name="password"><br>
-            <input type="submit">
-        </form>
+        <span id="heading">
+            <span></span>
+            <span id="headin-name">Dashboard</span>
+            <button id="heading-theme">󰔎</button>
+        </span>
+        <span id="body">
+        </span>
+        <button>Add more</button>
     </main>
 
     <footer>
@@ -36,4 +37,3 @@
     <script src="/static/js/main.js"></script>
 </body>
 </html>
-
