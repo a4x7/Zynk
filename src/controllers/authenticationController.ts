@@ -5,8 +5,8 @@ import user, { type userType } from '../db/user.model.js';
 import asyncWrapper from '../utils/asyncWrapper.js';
 import apiResponse from '../utils/apiResponse.js';
 import verifyToken from '../utils/jwtVerify.js';
-import { encrypt, decrypt } from '../utils/encryption.js';
 import type { payloadType } from '../utils/payloadType.js';
+import bcrypt from 'bcrypt';
 
 const register = asyncWrapper(async (req: Request, res: Response): Promise<void> => {
     const data: userType = req.body;
@@ -16,8 +16,8 @@ const register = asyncWrapper(async (req: Request, res: Response): Promise<void>
         throw new Error('Password must have atleast 8 characters');
     if(/^\d+$/.test(data.username))
         throw new Error('Username must have atleast one character');
-    const encPass = encrypt(data.password);
-    data.password = encPass;
+    const hashedPass = await bcrypt.hash(data.password, 10);
+    data.password = hashedPass;
     const newUsr = await user.create(data);
     apiResponse(req, res, 201, newUsr);
 });
@@ -27,8 +27,7 @@ const login = asyncWrapper(async (req: Request, res: Response): Promise<void> =>
     const usr = await user.findOne({username: username}).lean();
     if(!usr)
         throw new Error('User not found');
-    const decrypted = decrypt(usr.password);
-    if(password === decrypted){
+    if(await bcrypt.compare(password, usr.password)){
         const token =jwt.sign({
             username: username,
             type: 'regular',

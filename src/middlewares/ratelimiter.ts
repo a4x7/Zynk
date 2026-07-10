@@ -10,7 +10,7 @@ function ratelimiter(req: Request, _: Response, next: NextFunction): void {
     for(let element of counters){
         if(element.ip === ip) {
             if(element.count >= parseInt(process.env.RATE_LIMIT_COUNT || '5'))
-                new Error('Too many requests, try again later');
+                return next(new Error('Too many requests, try again later'));
             element.count++;
             return next();
         }

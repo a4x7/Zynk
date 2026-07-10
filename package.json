@@ -1,28 +1,34 @@
 {
-    "name": "first",
+    "name": "Zynk",
     "version": "1.0.0",
     "description": "",
     "main": "index.js",
     "scripts": {
+        "start": "node --env-file=./.env ./dist/app.js",
         "dev": "tsc --watch & node --env-file=./.env --watch ./dist/app.js",
         "build": "tsc",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [],
-    "author": "",
+    "author": "a4x7",
     "license": "ISC",
     "type": "module",
     "dependencies": {
+        "bcrypt": "^6.0.0",
         "cookie-parser": "^1.4.7",
         "express": "^5.2.1",
         "jsonwebtoken": "^9.0.3",
         "mongoose": "^9.7.3"
     },
     "devDependencies": {
+        "@types/bcrypt": "^6.0.0",
         "@types/cookie-parser": "^1.4.10",
         "@types/express": "^5.0.6",
         "@types/jsonwebtoken": "^9.0.10",
         "@types/node": "^26.0.1",
         "typescript": "^6.0.3"
+    },
+    "allowScripts": {
+        "bcrypt@6.0.0": true
     }
 }
