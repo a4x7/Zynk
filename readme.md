@@ -106,4 +106,4 @@ npm run dev             # tsc --watch + node --watch on dist/app.js
 
 ## License
 
-TBD.
+MIT
