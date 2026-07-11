@@ -2,7 +2,7 @@ html, body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-size: 16px;
+    font-size: 0.8vw;
     background-color: var(--bg-color);
     color: var(--fg-color);
     font-family: monospace;
@@ -57,10 +57,13 @@ a:hover{
     margin-bottom: 2rem;
 }
 #heading-name{
-    border: 1px solid var(--fg-color);
     box-shadow: 0 0 2px var(--fg-color);
     border-radius: 5px;
     padding: 0 0.5rem 0 0.5rem;
+    text-align: center;
+}
+#heading-name-sub{
+    font-size: 1.5rem;
 }
 #heading-theme{
     min-width: 1.3em;

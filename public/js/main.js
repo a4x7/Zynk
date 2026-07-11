@@ -1,19 +1,16 @@
 const endPoint = 'http://localhost:8000';
 
 async function sendRequest(url, options){
-    try {
-        const response = await fetch(`${endPoint}${url}`, options);
-        if(!response.ok)
-            throw new Error(`HTTP Error ${response.status}`);
-        return await response.json();
-    } catch(err) {
-        console.log(err.message);
-    }
+    let response;
+    response = await fetch(`${endPoint}${url}`, options);
+    if(!response.ok)
+        throw new Error((await response.json()).response);
+    return await response.json();
 }
 
 async function authenticate(){
     const res = await sendRequest('/api/login');
-    if(!res.response.isAuthenticated)
+    if(!res?.response?.isAuthenticated)
         return false;
     return true;
 }
@@ -28,9 +25,9 @@ async function applyAuth(){
     if(!isAuthenticated){
         const auth_2 = auth.cloneNode();
         auth.innerText = 'Sign in';
-        auth.href = '/static/login.html';
+        auth.href = 'login.html';
         auth_2.innerText = 'Sign up';
-        auth_2.href = '/static/register.html';
+        auth_2.href = 'register.html';
         const nav = document.getElementById('nav-span-last');
         nav.appendChild(auth);
         nav.appendChild(sep);
@@ -43,8 +40,8 @@ async function applyAuth(){
         auth.onclick = async () => {
             const res = await sendRequest('/api/logout');
             if(res.success === true)
-                alert('You are logged out');
-            window.location.pathname = '/static/index.html';
+                alert('You\'ve been signed out');
+            window.location.pathname = 'index.html';
         };
         const navSpanLast = document.getElementById('nav-span-last');
         navSpanLast.appendChild(greet);
@@ -53,7 +50,7 @@ async function applyAuth(){
         const navSpanFirst = document.getElementById('nav-span-first');
         const dash = document.createElement('a');
         dash.innerText = 'Dashboard';
-        dash.href = '/static/dashboard.html';
+        dash.href = 'dashboard.html';
         navSpanFirst.appendChild(dash);
     }
     document.getElementById('nav-auth-placeholder-1').remove();
@@ -71,8 +68,8 @@ async function login(event) {
         body: JSON.stringify(data),
     });
     if(res.success === true){
-        alert('You are logged in');
-        window.location.pathname = '/static/dashboard.html';
+        alert('Welcome back!');
+        location.pathname = '/static/dashboard.html';
     } else if(res.success === false) {
         alert(res.response);
     } else {
@@ -80,13 +77,26 @@ async function login(event) {
     }
 }
 
-applyAuth();
-
-if(window.location.pathname === '/static/dashboard.html'){
-    authenticate().then(predicate => {
-        if(!predicate)
-            return document.body.innerHTML = 'You are not authenticated<br><a href="/static/index.html"><button>Go home</button></a>';
-        fetchRecords();
+if(location.pathname === '/static/dashboard.html') {
+    errorHandler(async () => {
+        await loadingHandler(async () => {
+            if(!await authenticate())
+                return document.body.innerHTML = 'Sign in to view your dashboard<br><a href="/static/index.html"><button>Go home</button></a>';
+            await applyAuth();
+            await fetchRecords();
+        });
+    });
+} else if(location.pathname === '/static/index.html') {
+    errorHandler(async() => {
+        await loadingHandler(async () => {
+            if(await authenticate())
+                document.getElementById('get-started').remove();
+            await applyAuth();
+        });
+    });
+} else {
+    errorHandler(async () => {
+        await loadingHandler(applyAuth);
     });
 }
 
@@ -149,7 +159,7 @@ async function fetchRecords(){
         tr.appendChild(td3);
         table.appendChild(tr);
     }
-    if(table.hasChildNodes()){
+    if(table.hasChildNodes()) {
         const tr = document.createElement('tr');
         const th1 = document.createElement('th');
         const th2 = document.createElement('th');
@@ -171,5 +181,35 @@ async function fetchRecords(){
             div.appendChild(table);
             document.getElementById('body').appendChild(div);
         }
+    } else {
+        const mes = document.createElement('span');
+        mes.innerText = 'You haven\'t shortened any URLs yet. Click "Shorten a URL" to create your first one.'
+        document.getElementById('body').appendChild(mes);
     }
+}
+
+async function errorHandler(fn){
+    try{
+        await fn();
+    } catch(err) {
+        alert(err.message);
+    }
+}
+async function loadingHandler(...args){
+    const div = document.createElement('div');
+    div.style.setProperty('position', 'fixed');
+    div.style.setProperty('top', '0');
+    div.style.setProperty('height', '100vh');
+    div.style.setProperty('width', '100vw');
+    div.style.setProperty('z-index', '2');
+    div.style.setProperty('background-color', 'var(--bg-color)');
+    div.style.setProperty('color', 'var(--fg-color)');
+    div.style.setProperty('display', 'flex');
+    div.style.setProperty('justify-content', 'center');
+    div.style.setProperty('align-items', 'center');
+    div.innerText = 'Loading...';
+    document.body.appendChild(div);
+    for(let i of args)
+        await i();
+    div.remove();
 }

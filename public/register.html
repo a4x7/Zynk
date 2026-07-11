@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/index.css">
-    <title>Dashboard - Zynk</title>
+    <title>Sign up - Zynk</title>
+    <link rel="stylesheet" href="/static/css/index.css">
 </head>
 <body>
     <header>
@@ -22,18 +22,25 @@
     <main>
         <span id="heading">
             <span></span>
-            <span id="heading-name">Your links</span>
+            Create your account
             <button id="heading-theme">󰔎</button>
         </span>
-        <span id="body">
-        </span><br>
-        <button>Add more</button>
+        <form id="registerForm" onsubmit="register(event)">
+            <label for="usrname">Username*:</label>
+            <input type="text" id="usrname" name="username"><br>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email"><br>
+            <label for="pass">Password*:</label>
+            <input type="text" id="pass" name="password"><br>
+            <button type="submit">Sign up</button>
+        </form>
     </main>
-
-    <footer>
         Zynk — built by Arnav. <a href="https://github.com/a4x7/Zynk">GitHub</a>
+    <footer>
+
     </footer>
 
     <script src="js/main.js"></script>
 </body>
 </html>
+

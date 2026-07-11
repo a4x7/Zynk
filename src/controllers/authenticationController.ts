@@ -9,6 +9,17 @@ import type { payloadType } from '../utils/payloadType.js';
 import bcrypt from 'bcrypt';
 
 const register = asyncWrapper(async (req: Request, res: Response): Promise<void> => {
+    const token: string = req.cookies.authtoken;
+    if(token) {
+        let flag: boolean = true;
+        try {
+            verifyToken(token) as payloadType;
+        } catch(err: unknown){
+            flag = false;
+        }
+        if(flag)
+            throw new Error('You are already logged in');
+    }
     const data: userType = req.body;
     if(!data)
         throw new Error('Empty body');

@@ -18,7 +18,7 @@ function ratelimiter(req: Request, _: Response, next: NextFunction): void {
     counters.push({ ip, count: 0 });
     setTimeout(() => {
         counters = counters.filter((element) => element.ip !== ip);
-    }, 20000);
+    }, 60000);
     next();
 }
 
