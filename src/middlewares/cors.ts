@@ -10,6 +10,7 @@ function cors(req: Request, res: Response, next: NextFunction): void {
         if(i === req.get('origin')) {
             res.set({
                 'Access-Control-Allow-Origin': i,
+                'Access-Control-Allow-Headers': 'Content-Type, Accept',
             });
             break;
         }

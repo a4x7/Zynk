@@ -1,6 +1,63 @@
 const endPoint = 'http://localhost:8000';
 
-async function sendRequest(url, options){
+errorHandler(async () => await loadingHandler(main, themeSwitcher));
+
+async function main(){
+    const data = await sendRequest('/api/login');
+    if(location.pathname === '/static/dashboard.html') {
+        if(!data.response.isAuthenticated)
+            return document.body.innerHTML = 'Sign in to view your dashboard<br><a href="/static/index.html"><button>Go home</button></a>';
+        await applyAuth(data);
+        await fetchRecords(data);
+    } else if(location.pathname === '/static/index.html') {
+        if(data.response.isAuthenticated)
+            document.getElementById('get-started').remove();
+        await applyAuth(data);
+    } else {
+        await applyAuth(data);
+    }
+};
+
+function themeSwitcher() {
+    const r = document.querySelector(':root');
+    const dark = {
+        bgcolor: 'rgb(2, 2, 2)',
+        fgcolor: 'rgb(232, 234, 237)',
+    };
+    const light = {
+        bgcolor: 'rgb(232, 234, 237)',
+        fgcolor: 'rgb(2, 2, 2)',
+    };
+    if(r && localStorage.getItem('theme')) {
+        const local = localStorage.getItem('theme');
+        if(local === 'dark') {
+            r.style.setProperty('--bg-color', dark.bgcolor);
+            r.style.setProperty('--fg-color', dark.fgcolor);
+            localStorage.setItem('theme', 'dark');
+        } else if(local === 'light') {
+            r.style.setProperty('--bg-color', light.bgcolor);
+            r.style.setProperty('--fg-color', light.fgcolor);
+            localStorage.setItem('theme', 'light');
+        }
+    }
+    if(r){
+        const themeBut = document.getElementById('heading-theme');
+        themeBut.addEventListener('click', () => {
+            const rs = getComputedStyle(r);
+            if(rs.getPropertyValue('--bg-color') === light.bgcolor && rs.getPropertyValue('--fg-color') === light.fgcolor){
+                r.style.setProperty('--bg-color', dark.bgcolor);
+                r.style.setProperty('--fg-color', dark.fgcolor);
+                localStorage.setItem('theme', 'dark');
+            } else {
+                r.style.setProperty('--bg-color', light.bgcolor);
+                r.style.setProperty('--fg-color', light.fgcolor);
+                localStorage.setItem('theme', 'light');
+            }
+        });
+    }
+}
+
+async function sendRequest(url, options) {
     let response;
     response = await fetch(`${endPoint}${url}`, options);
     if(!response.ok)
@@ -8,21 +65,13 @@ async function sendRequest(url, options){
     return await response.json();
 }
 
-async function authenticate(){
-    const res = await sendRequest('/api/login');
-    if(!res?.response?.isAuthenticated)
-        return false;
-    return true;
-}
-
-async function applyAuth(){
+async function applyAuth(data){
     const auth = document.createElement('a');
-    const isAuthenticated = await authenticate();
     const sep = document.createElement('span');
     sep.style.border = '1px solid #020202';
     sep.style.minWidth = '0';
     sep.style.margin = '0 0.5rem 0 0.5rem';
-    if(!isAuthenticated){
+    if(!data.response.isAuthenticated) {
         const auth_2 = auth.cloneNode();
         auth.innerText = 'Sign in';
         auth.href = 'login.html';
@@ -33,7 +82,6 @@ async function applyAuth(){
         nav.appendChild(sep);
         nav.appendChild(auth_2);
     } else {
-        const data = await sendRequest('/api/login');
         const greet = document.createElement('span');
         greet.innerText = `Hello ${data.response.username}!`;
         auth.innerText = `Sign out`;
@@ -41,7 +89,7 @@ async function applyAuth(){
             const res = await sendRequest('/api/logout');
             if(res.success === true)
                 alert('You\'ve been signed out');
-            window.location.pathname = 'index.html';
+            window.location.pathname = '/static/index.html';
         };
         const navSpanLast = document.getElementById('nav-span-last');
         navSpanLast.appendChild(greet);
@@ -77,76 +125,14 @@ async function login(event) {
     }
 }
 
-if(location.pathname === '/static/dashboard.html') {
-    errorHandler(async () => {
-        await loadingHandler(async () => {
-            if(!await authenticate())
-                return document.body.innerHTML = 'Sign in to view your dashboard<br><a href="/static/index.html"><button>Go home</button></a>';
-            await applyAuth();
-            await fetchRecords();
-        });
-    });
-} else if(location.pathname === '/static/index.html') {
-    errorHandler(async() => {
-        await loadingHandler(async () => {
-            if(await authenticate())
-                document.getElementById('get-started').remove();
-            await applyAuth();
-        });
-    });
-} else {
-    errorHandler(async () => {
-        await loadingHandler(applyAuth);
-    });
-}
-
-const r = document.querySelector(':root');
-const dark = {
-    bgcolor: 'rgb(2, 2, 2)',
-    fgcolor: 'rgb(232, 234, 237)',
-};
-const light = {
-    bgcolor: 'rgb(232, 234, 237)',
-    fgcolor: 'rgb(2, 2, 2)',
-};
-
-if(r && localStorage.getItem('theme')) {
-    const local = localStorage.getItem('theme');
-    if(local === 'dark') {
-        r.style.setProperty('--bg-color', dark.bgcolor);
-        r.style.setProperty('--fg-color', dark.fgcolor);
-        localStorage.setItem('theme', 'dark');
-    } else if(local === 'light') {
-        r.style.setProperty('--bg-color', light.bgcolor);
-        r.style.setProperty('--fg-color', light.fgcolor);
-        localStorage.setItem('theme', 'light');
-    }
-}
-
-if(r){
-    const themeBut = document.getElementById('heading-theme');
-    themeBut.addEventListener('click', () => {
-        const rs = getComputedStyle(r);
-        if(rs.getPropertyValue('--bg-color') === light.bgcolor && rs.getPropertyValue('--fg-color') === light.fgcolor){
-            r.style.setProperty('--bg-color', dark.bgcolor);
-            r.style.setProperty('--fg-color', dark.fgcolor);
-            localStorage.setItem('theme', 'dark');
-        } else {
-            r.style.setProperty('--bg-color', light.bgcolor);
-            r.style.setProperty('--fg-color', light.fgcolor);
-            localStorage.setItem('theme', 'light');
-        }
-    });
-}
-
-async function fetchRecords(){
-    if(!(await authenticate()))
+async function fetchRecords(data) {
+    if(!data.response.isAuthenticated)
         return;
     const table = document.createElement('table');
     const res = (await sendRequest('/api', {
         method: 'GET'
     })).response;
-    for(let i of res){
+    for(let i of res) {
         const tr = document.createElement('tr');
         const td1 = document.createElement('td');
         const td2 = document.createElement('td');
@@ -170,7 +156,7 @@ async function fetchRecords(){
         tr.append(th1, th2, th3);
         table.firstElementChild.before(tr);
         const bod = document.getElementById("body");
-        if(bod){
+        if(bod) {
             const div = document.createElement('div');
             div.style.setProperty('display', 'flex');
             div.style.setProperty('flex-direction', 'column');
@@ -188,14 +174,15 @@ async function fetchRecords(){
     }
 }
 
-async function errorHandler(fn){
+async function errorHandler(fn) {
     try{
         await fn();
     } catch(err) {
         alert(err.message);
     }
 }
-async function loadingHandler(...args){
+
+async function loadingHandler(...args) {
     const div = document.createElement('div');
     div.style.setProperty('position', 'fixed');
     div.style.setProperty('top', '0');

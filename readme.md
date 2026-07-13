@@ -52,7 +52,7 @@ src/
     └── payloadType.ts              # JWT payload type
 
 public/
-├── index.html / login.html / dashboard.html
+├── index.html / login.html / dashboard.html / register.html
 ├── css/index.css
 └── js/main.js
 ```
@@ -92,7 +92,6 @@ npm run dev             # tsc --watch + node --watch on dist/app.js
 | `ALLOWED_ORIGINS`    | Comma-separated CORS allow-list                    |
 | `MONGO_URI`          | MongoDB connection string                          |
 | `JWT_KEY`            | Secret for signing/verifying JWTs                  |
-| `SECRET_KEY`         | Reserved (currently unused now that bcrypt handles hashing) |
 | `RATE_LIMIT_COUNT`   | Requests allowed per 20s window, per IP            |
 | `LOGIN_TIMEOUT`      | Session/JWT lifetime, in minutes                   |
 
