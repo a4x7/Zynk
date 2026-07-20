@@ -1,6 +1,6 @@
 const endPoint = 'http://localhost:8000';
 
-errorHandler(async () => await loadingHandler(main, themeSwitcher));
+errorHandler(async () => await loadingHandler(main));
 
 async function main(){
     const data = await sendRequest('/api/login');
@@ -9,6 +9,7 @@ async function main(){
             return document.body.innerHTML = 'Sign in to view your dashboard<br><a href="/static/index.html"><button>Go home</button></a>';
         await applyAuth(data);
         await fetchRecords(data);
+        addUrls();
     } else if(location.pathname === '/static/index.html') {
         if(data.response.isAuthenticated)
             document.getElementById('get-started').remove();
@@ -16,6 +17,7 @@ async function main(){
     } else {
         await applyAuth(data);
     }
+    themeSwitcher();
 };
 
 function themeSwitcher() {
@@ -55,6 +57,38 @@ function themeSwitcher() {
             }
         });
     }
+}
+
+function addUrls(){
+    const but = document.getElementById('addMoreBut');
+    const form = document.getElementById('addMoreForm');
+    form.onsubmit = async (e) => {
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(form));
+        const response = await sendRequest('/api', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data),
+        });
+        if(response.success)
+            alert('Added Successfully');
+        else
+            alert('Something went wrong');
+        location.reload();
+    }
+    form.style.setProperty('display', 'none');
+    let q = true;
+    but.addEventListener('click', () => {
+        if(q){
+            form.style.removeProperty('display');
+            q = false;
+        } else{
+            form.style.setProperty('display', 'none');
+            q = true;
+        }
+    });
 }
 
 async function sendRequest(url, options) {
@@ -188,7 +222,7 @@ async function loadingHandler(...args) {
     div.style.setProperty('top', '0');
     div.style.setProperty('height', '100vh');
     div.style.setProperty('width', '100vw');
-    div.style.setProperty('z-index', '2');
+    div.style.setProperty('z-index', '999');
     div.style.setProperty('background-color', 'var(--bg-color)');
     div.style.setProperty('color', 'var(--fg-color)');
     div.style.setProperty('display', 'flex');
