@@ -18,7 +18,7 @@ const redirectGet = asyncWrapper(async (req: Request, res: Response): Promise<vo
         if(!usr)
             throw new Error('User not found');
         const id = decoder(str);
-        const doc = await table.findOne({_id: id}).lean();
+        const doc = await table.findOne({_id: id, user: usr._id}).lean();
         if(doc)
             return res.status(300).redirect(doc.URL);
     }

@@ -83,4 +83,18 @@ const logout = asyncWrapper(async (req: Request, res: Response): Promise<void> =
     apiResponse(req, res, 200);
 });
 
-export { register, login, fetchUserInfo, logout };
+const deleteUser = asyncWrapper(async (req: Request, res: Response): Promise<void> => {
+    const token = req.cookies.authoken;
+    if(!token)
+        throw new Error('Token not found');
+    const payload = verifyToken(token) as payloadType;
+    const usr = await user.findOneAndDelete({username: payload.username}).lean();
+    if(!usr)
+        throw new Error('User not found');
+    apiResponse(req, res, 200, {
+        username: usr.username,
+        email: usr.email,
+    });
+});
+
+export { register, login, fetchUserInfo, logout, deleteUser };
