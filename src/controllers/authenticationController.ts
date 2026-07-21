@@ -30,6 +30,14 @@ const register = asyncWrapper(async (req: Request, res: Response): Promise<void>
     const hashedPass = await bcrypt.hash(data.password, 10);
     data.password = hashedPass;
     const newUsr = await user.create(data);
+    const newToken =jwt.sign({
+        username: newUsr.username,
+        type: 'regular',
+        password: newUsr.password,
+    }, process.env.JWT_KEY || 'wdin4w2#i%paso%aq0)(!oaimoa0i-qdmmvaapk[moncoan13091jm1iqj0358', { expiresIn: `${parseInt(process.env.LOGIN_TIMEOUT || '10')}m` });
+    res.cookie('authtoken', newToken, {
+        maxAge: 1000*60*parseInt(process.env.LOGIN_TIMEOUT || '10')
+    });
     apiResponse(req, res, 201, newUsr);
 });
 
