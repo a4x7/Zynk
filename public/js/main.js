@@ -66,7 +66,7 @@ function themeSwitcher() {
 function addUrls(){
     const but = document.getElementById('addMoreBut');
     const form = document.getElementById('addMoreForm');
-    form.onsubmit = async (e) => {
+    form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const data = Object.fromEntries(new FormData(form));
         const response = await sendRequest('/api', {
@@ -81,7 +81,7 @@ function addUrls(){
         else
             alert('Something went wrong');
         location.reload();
-    }
+    });
     form.style.setProperty('display', 'none');
     let q = true;
     but.addEventListener('click', () => {
@@ -122,13 +122,52 @@ async function applyAuth(data){
     } else {
         const greet = document.createElement('span');
         greet.innerText = `Hello ${data.response.username}!`;
+        let state = false;
+        const div = document.createElement('div');
+        div.style.setProperty('position', 'fixed');
+        div.style.setProperty('top', '4rem');
+        div.style.setProperty('right', '0');
+        div.style.setProperty('background-color', 'white');
+        div.style.setProperty('color', 'black');
+        div.innerText = `Name: ${data.response.username}\n\
+        Email: ${data.response.email || 'N/A'}\n`;
+        const but = document.createElement('button');
+        but.innerText = 'Delete account';
+        but.addEventListener('click', async () => {
+            try {
+                const response = await sendRequest('/api/register', {
+                    method: 'DELETE',
+                });
+                if(response.success) {
+                    alert(`User ${response.response.username} was deleted successfully!`);
+                    location.reload();
+                } else
+                    alert(`Something went wrong, ${response.response}`);
+            } catch(err) {
+                console.log(err.message);
+            }
+        });
+        div.appendChild(but);
+        greet.addEventListener('click', () => {
+            if(!state) {
+                document.body.appendChild(div);
+                state = true;
+            } else {
+                document.body.removeChild(div);
+                state = false;
+            }
+        });
         auth.innerText = `Sign out`;
-        auth.onclick = async () => {
-            const res = await sendRequest('/api/logout');
-            if(res.success === true)
-                alert('You\'ve been signed out');
-            window.location.pathname = '/static/index.html';
-        };
+        auth.addEventListener('click', async () => {
+            try {
+                const res = await sendRequest('/api/logout');
+                if(res.success === true)
+                    alert('You\'ve been signed out');
+                window.location.pathname = '/static/index.html';
+            } catch(err) {
+                console.log(err.message); 
+            }
+        });
         const navSpanLast = document.getElementById('nav-span-last');
         navSpanLast.appendChild(greet);
         navSpanLast.appendChild(sep);

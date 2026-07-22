@@ -67,8 +67,7 @@ const login = asyncWrapper(async (req: Request, res: Response): Promise<void> =>
 const fetchUserInfo = asyncWrapper(async (req: Request, res: Response): Promise<void> => {
     const token: string = req.cookies.authtoken;
     if(!token)
-        return apiResponse(req, res, 200, {isAuthenticated: false});
-    const payload = verifyToken(token) as payloadType; 
+        return apiResponse(req, res, 200, {isAuthenticated: false}); const payload = verifyToken(token) as payloadType; 
     const usr = await user.findOne({username: payload.username}).lean();
     if(!usr)
         return apiResponse(req, res, 200, { isAuthenticated: false});
@@ -84,7 +83,7 @@ const logout = asyncWrapper(async (req: Request, res: Response): Promise<void> =
 });
 
 const deleteUser = asyncWrapper(async (req: Request, res: Response): Promise<void> => {
-    const token = req.cookies.authoken;
+    const token = req.cookies.authtoken;
     if(!token)
         throw new Error('Token not found');
     const payload = verifyToken(token) as payloadType;
