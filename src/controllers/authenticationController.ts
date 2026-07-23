@@ -21,11 +21,8 @@ const register = asyncWrapper(async (req: Request, res: Response): Promise<void>
         } catch(err: unknown){
             flag = false;
         }
-        if(flag){
-            if(avatar)
-                fs.rmSync(avatar.path);
+        if(flag)
             throw new Error('You are already logged in');
-        }
     }
     const data: userType = req.body;
 

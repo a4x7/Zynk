@@ -15,7 +15,7 @@ async function uploadOnCloudinary(localFilePath: string) {
 
     // Upload an image
     const uploadResult = await cloudinary.uploader.upload(localFilePath, {
-        public_id: 'avatar',
+        use_filename: true,
         unique_filename: true,
         resource_type: 'image',
         invalidate: false,
