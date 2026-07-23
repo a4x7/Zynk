@@ -147,6 +147,11 @@ async function applyAuth(data){
                 console.log(err.message);
             }
         });
+        const img = document.createElement('img');
+        img.src = data.response.avatar;
+        img.style.setProperty('height', '5rem');
+        img.style.setProperty('width', '5rem');
+        div.firstElementChild.before(img);
         div.appendChild(but);
         greet.addEventListener('click', () => {
             if(!state) {
@@ -187,20 +192,24 @@ function login() {
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const data = Object.fromEntries(new FormData(form));
-        const res = await sendRequest('/api/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data),
-        });
-        if(res.success === true){
-            alert('Welcome back!');
-            location.pathname = '/static/dashboard.html';
-        } else if(res.success === false) {
-            alert(res.response);
-        } else {
-            alert('Something went wrong');
+        try {
+            const res = await sendRequest('/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data),
+            });
+            if(res.success === true){
+                alert('Welcome back!');
+                location.pathname = '/static/dashboard.html';
+            } else if(res.success === false) {
+                alert(res.response);
+            } else {
+                alert('Something went wrong');
+            }
+        } catch(err) {
+            console.log(err.message);
         }
     });
 }
@@ -209,21 +218,22 @@ function register() {
     const form = document.getElementById('registerForm');
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const data = Object.fromEntries(new FormData(form));
-        const response = await sendRequest('/api/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        });
-        if(response) {
-            alert('Registered Successfully!');
-            location.pathname = '/static/index.html';
-        } else if(!response) {
-            alert(res.response);
-        } else {
-            alert('Something went wrong');
+        const data = new FormData(form);
+        try {
+            const response = await sendRequest('/api/register', {
+                method: 'POST',
+                body: data
+            });
+            if(response) {
+                alert('Registered Successfully!');
+                location.pathname = '/static/index.html';
+            } else if(!response) {
+                alert(res.response);
+            } else {
+                alert('Something went wrong');
+            }
+        } catch(err) {
+            console.log(err.message);
         }
     });
 }

@@ -3,6 +3,7 @@ import { Schema, model } from 'mongoose';
 interface userType {
     username: string,
     email?: string,
+    avatar?: string,
     password: string,
 }
 
@@ -13,6 +14,7 @@ const userSchema = new Schema<userType>({
         unique: true,
     },
     email: String,
+    avatar: String,
     password: {
         type: String,
         required: true,

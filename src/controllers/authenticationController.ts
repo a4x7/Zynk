@@ -1,3 +1,5 @@
+import fs from 'node:fs'
+
 import type { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
@@ -7,9 +9,11 @@ import apiResponse from '../utils/apiResponse.js';
 import verifyToken from '../utils/jwtVerify.js';
 import type { payloadType } from '../utils/payloadType.js';
 import bcrypt from 'bcrypt';
+import uploadOnCloudinary from '../utils/cloudinary.js';
 
 const register = asyncWrapper(async (req: Request, res: Response): Promise<void> => {
     const token: string = req.cookies.authtoken;
+    const avatar = req.file;
     if(token) {
         let flag: boolean = true;
         try {
@@ -17,10 +21,14 @@ const register = asyncWrapper(async (req: Request, res: Response): Promise<void>
         } catch(err: unknown){
             flag = false;
         }
-        if(flag)
+        if(flag){
+            if(avatar)
+                fs.rmSync(avatar.path);
             throw new Error('You are already logged in');
+        }
     }
     const data: userType = req.body;
+
     if(!data)
         throw new Error('Empty body');
     if(data.password.length < 8)
@@ -29,6 +37,15 @@ const register = asyncWrapper(async (req: Request, res: Response): Promise<void>
         throw new Error('Username must have atleast one character');
     const hashedPass = await bcrypt.hash(data.password, 10);
     data.password = hashedPass;
+    const exists = await user.exists({username: data.username});
+    if(exists)
+        throw new Error('User already exists');
+    if(avatar){
+        const response = await uploadOnCloudinary(avatar.path);
+        if(response)
+            data.avatar = response.url;
+        fs.rmSync(avatar.path);
+    }
     const newUsr = await user.create(data);
     const newToken =jwt.sign({
         username: newUsr.username,
@@ -43,7 +60,7 @@ const register = asyncWrapper(async (req: Request, res: Response): Promise<void>
 
 const login = asyncWrapper(async (req: Request, res: Response): Promise<void> => {
     const { username, password } = req.body; 
-    const usr = await user.findOne({username: username}).lean();
+    const usr = await user.findOne({username}).lean();
     if(!usr)
         throw new Error('User not found');
     if(await bcrypt.compare(password, usr.password)){
@@ -71,7 +88,7 @@ const fetchUserInfo = asyncWrapper(async (req: Request, res: Response): Promise<
     const usr = await user.findOne({username: payload.username}).lean();
     if(!usr)
         return apiResponse(req, res, 200, { isAuthenticated: false});
-    apiResponse(req, res, 200, {isAuthenticated: true, username: usr.username, email: usr.email});
+    apiResponse(req, res, 200, {isAuthenticated: true, username: usr.username, email: usr.email, avatar: usr.avatar});
 });
 
 const logout = asyncWrapper(async (req: Request, res: Response): Promise<void> => {
@@ -90,6 +107,7 @@ const deleteUser = asyncWrapper(async (req: Request, res: Response): Promise<voi
     const usr = await user.findOneAndDelete({username: payload.username}).lean();
     if(!usr)
         throw new Error('User not found');
+    res.clearCookie('authtoken');
     apiResponse(req, res, 200, {
         username: usr.username,
         email: usr.email,
