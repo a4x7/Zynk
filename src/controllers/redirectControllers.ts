@@ -1,4 +1,4 @@
-import type { Request, Response, NextFunction } from 'express';
+import type { Request, Response } from 'express';
 
 import table from '../db/table.model.js';
 import user from '../db/user.model.js';

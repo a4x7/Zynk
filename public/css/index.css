@@ -2,16 +2,27 @@ html, body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-size: 0.8vw;
     background-color: var(--bg-color);
     color: var(--fg-color);
-    font-family: monospace;
+    font-family: sans-serif;
 }
 header, main, footer {
     margin-bottom: 1rem;
 }
+main {
+    margin: 1rem 8rem;
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 0 0.5rem var(--fg-color);
+}
+button {
+    font-size: 1rem;
+}
+footer {
+    text-align: center;
+}
 a {
-    color: var(--fg-color);
+    color: #4635B1;
     text-decoration-line: none;
     cursor: pointer;
 }
@@ -25,7 +36,9 @@ a:hover{
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    background-color: #16db65;
+    background-color: #AEEA94;
+    border-radius: 5px;
+    margin: 1rem;
     height: 4rem;
     font-size: 1rem;
 }
@@ -40,7 +53,7 @@ a:hover{
     text-decoration-color: #020202;
 }
 #navbar a:hover{
-    color: #16db65;
+    color: #AEEA94;
     background-color: var(--bg-color);
     text-decoration-line: none;
 }
@@ -57,7 +70,7 @@ a:hover{
     margin-bottom: 2rem;
 }
 #heading-name{
-    box-shadow: 0 0 2px var(--fg-color);
+    text-shadow: 0.3rem 0.3rem 0.2rem #B771E5;
     border-radius: 5px;
     padding: 0 0.5rem 0 0.5rem;
     text-align: center;
@@ -93,16 +106,34 @@ th,td {
     padding: 0.5rem;
 }
 
-@media(prefers-color-scheme: dark){
-    :root{
+@media(prefers-color-scheme: dark) {
+    :root {
         --bg-color: #020202;
         --fg-color: #e8eaed;
     }
 }
 
-@media(prefers-color-scheme: light){
-    :root{
+@media(prefers-color-scheme: light) {
+    :root {
         --bg-color: #e8eaed;
         --fg-color: #020202;
+    }
+}
+@media(orientation: portrait) {
+    :root {
+        font-size: 0.8vh;
+    }
+}
+@media(orientation: landscape) {
+    :root {
+        font-size: 0.8vw;
+    }
+}
+@keyframes anim {
+    from {
+        text-shadow: none;
+    }
+    to {
+        text-shadow: 0.5rem 0.5rem 0 #B771E5;
     }
 }

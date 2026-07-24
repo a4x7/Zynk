@@ -1,6 +1,6 @@
 import fs from 'node:fs'
 
-import type { Request, Response, NextFunction } from 'express';
+import type { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
 import user, { type userType } from '../db/user.model.js';

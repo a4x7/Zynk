@@ -1,7 +1,7 @@
 import crypto from 'node:crypto';
 
 import Schema from 'mongoose';
-import type { Request, Response, NextFunction } from 'express';
+import type { Request, Response } from 'express';
 
 import user from '../db/user.model.js';
 import table, { type tableType } from '../db/table.model.js';
