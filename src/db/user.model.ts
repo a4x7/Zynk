@@ -1,6 +1,7 @@
 import { Schema, model } from 'mongoose';
 
 interface userType {
+    _id: Schema.Types.ObjectId,
     username: string,
     email?: string,
     avatar?: string,

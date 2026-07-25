@@ -3,7 +3,7 @@ const endPoint = 'http://localhost:8000';
 errorHandler(async () => await loadingHandler(main));
 
 async function main(){
-    const data = await sendRequest('/api/login');
+    const data = await sendRequest('/api/user');
     if(location.pathname === '/static/dashboard.html') {
         if(!data.response.isAuthenticated)
             return document.body.innerHTML = 'Sign in to view your dashboard<br><a href="/static/index.html"><button>Go home</button></a>';
@@ -135,7 +135,7 @@ async function applyAuth(data){
         but.innerText = 'Delete account';
         but.addEventListener('click', async () => {
             try {
-                const response = await sendRequest('/api/register', {
+                const response = await sendRequest('/api/user', {
                     method: 'DELETE',
                 });
                 if(response.success) {
@@ -220,7 +220,7 @@ function register() {
         e.preventDefault();
         const data = new FormData(form);
         try {
-            const response = await sendRequest('/api/register', {
+            const response = await sendRequest('/api/user', {
                 method: 'POST',
                 body: data
             });
@@ -250,8 +250,11 @@ async function fetchRecords(data) {
         const td1 = document.createElement('td');
         const td2 = document.createElement('td');
         const td3 = document.createElement('td');
+        const a = document.createElement('a');
+        a.href = `/api/redirect/${i.short}`;
+        a.innerText = i.short;
         td1.innerText = i.URL;
-        td2.innerHTML = `<a href="/api/redirect/${i.short}">${i.short}</a>`;
+        td2.appendChild(a);
         td3.innerHTML = new Date(i.expireAt).toLocaleString();
         tr.appendChild(td1);
         tr.appendChild(td2);

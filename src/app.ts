@@ -14,6 +14,7 @@ import apiRouter  from './routes/api.js';
 import redirectRouter from './routes/redirect.js';
 import authenticationRouter from './routes/authentication.js';
 import errorHandler from './middlewares/errorHandler.js';
+import userRouter from './routes/user.js';
 
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -34,6 +35,7 @@ app.use(ratelimiter);
 app.use('/', apiRouter);
 app.use('/', redirectRouter);
 app.use('/', authenticationRouter);
+app.use('/', userRouter);
 
 app.use(errorHandler);
 
