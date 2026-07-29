@@ -56,7 +56,7 @@ const apiDelete = asyncWrapper(async (req: Request, res: Response): Promise<void
         throw new Error('Empty body');
     const URL: string = req.body.URL;
     const usr: userType | null = await authenticate(req);
-    const doc = await table.deleteOne({user: usr._id, URL});
+    const doc = await table.findOneAndDelete({user: usr._id, URL}).lean() as tableType;
     apiResponse(req, res, 200, doc);
 });
 

@@ -69,6 +69,7 @@ function addUrls(){
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const data = Object.fromEntries(new FormData(form));
+        data.expireAt *= 60;
         const response = await sendRequest('/api', {
             method: 'POST',
             headers: {
@@ -79,7 +80,7 @@ function addUrls(){
         if(response.success)
             alert('Added Successfully');
         else
-            alert('Something went wrong');
+            alert(response.response);
         location.reload();
     });
     form.style.setProperty('display', 'none');
@@ -98,8 +99,6 @@ function addUrls(){
 async function sendRequest(url, options) {
     let response;
     response = await fetch(`${endPoint}${url}`, options);
-    if(!response.ok)
-        throw new Error((await response.json()).response);
     return await response.json();
 }
 
@@ -147,11 +146,13 @@ async function applyAuth(data){
                 console.log(err.message);
             }
         });
+        if(data.response.avatar){
         const img = document.createElement('img');
-        img.src = data.response.avatar;
-        img.style.setProperty('height', '5rem');
-        img.style.setProperty('width', '5rem');
-        div.firstElementChild.before(img);
+            img.src = data.response.avatar;
+            img.style.setProperty('height', '5rem');
+            img.style.setProperty('width', '5rem');
+            div.firstElementChild.before(img);
+        }
         div.appendChild(but);
         greet.addEventListener('click', () => {
             if(!state) {
@@ -250,6 +251,25 @@ async function fetchRecords(data) {
         const td1 = document.createElement('td');
         const td2 = document.createElement('td');
         const td3 = document.createElement('td');
+        const delet = document.createElement('button');
+        delet.innerText = 'X';
+        delet.style.setProperty('background-color', 'red');
+        delet.addEventListener('click', async () => {
+            const response = await sendRequest('/api', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    URL: i.URL, 
+                })
+            });
+            if(response.success) {
+                alert(`${response.response.URL} deleted successfully`);
+                location.reload();
+            } else
+                alert('Something went wrong');
+        });
         const a = document.createElement('a');
         a.href = `/api/redirect/${i.short}`;
         a.innerText = i.short;
@@ -259,6 +279,7 @@ async function fetchRecords(data) {
         tr.appendChild(td1);
         tr.appendChild(td2);
         tr.appendChild(td3);
+        tr.appendChild(delet);
         table.appendChild(tr);
     }
     if(table.hasChildNodes()) {
